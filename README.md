@@ -80,7 +80,21 @@ Jenkins ใช้ `Jenkinsfile` สาม stage
 
 ถ้าเครื่อง Jenkins มี Docker จะ deploy ด้วย Docker ถ้าไม่มี จะลงที่ `$HOME/clinic-queue-deploy` แล้วรันด้วย Node
 
-### ตั้ง Jenkins
+### เปิด Jenkins บนเครื่องด้วยคำสั่งเดียว
+
+ต้องมี Java 21 และ Node.js 20+ (ไม่ต้องใช้ Docker)
+
+```bash
+./jenkins/start.sh
+```
+
+สคริปต์ดาวน์โหลด Jenkins LTS กับปลั๊กอิน (Git, Pipeline, Stage View) แล้วสร้าง job `clinic-queue`
+ที่ดึง `Jenkinsfile` จาก GitHub ให้เอง เปิด http://localhost:8080/job/clinic-queue/ แล้วกด **Build Now**
+job เช็กโค้ดใหม่บน GitHub ทุก 2 นาที push แล้ว Jenkins จะ build เอง
+
+Jenkins นี้ไม่มีล็อกอินและเปิดให้เข้าได้เฉพาะจากเครื่องตัวเอง (127.0.0.1) ใช้สำหรับเดโมเท่านั้น
+
+### ตั้ง Jenkins เอง (เครื่องอื่น)
 
 1. ติดตั้ง Jenkins แล้วติดตั้งปลั๊กอิน **Git** และ **Pipeline**
 2. ติดตั้ง Node.js 20 บนเครื่อง Jenkins แล้วให้คำสั่ง `node` / `npm` อยู่ใน PATH

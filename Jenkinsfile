@@ -22,8 +22,11 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sh 'chmod +x scripts/deploy.sh'
-                sh './scripts/deploy.sh'
+                // ไม่ให้ Jenkins ปิดแอปที่รันค้างไว้หลัง build จบ
+                withEnv(['JENKINS_NODE_COOKIE=dontKillMe', 'BUILD_ID=dontKillMe']) {
+                    sh 'chmod +x scripts/deploy.sh'
+                    sh './scripts/deploy.sh'
+                }
             }
         }
     }
