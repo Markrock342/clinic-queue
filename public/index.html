@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#ffffff" />
+    <title>เคาน์เตอร์คิว · คลินิกบ้านใบเตย</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@500..800&family=Noto+Sans+Thai+Looped:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="top">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">บ</span>
+        <span class="brand-name">คลินิกบ้านใบเตย</span>
+      </div>
+      <div class="top-right">
+        <span class="sync" id="sync" data-state="loading" role="status">กำลังเชื่อมต่อ…</span>
+        <a class="btn btn-outline" href="/display" target="clinic-display" rel="noopener">เปิดจอผู้ป่วย</a>
+        <time class="clock" id="clock">--:--</time>
+      </div>
+    </header>
+
+    <main class="page">
+      <!-- ออกบัตรคิว -->
+      <section class="panel issue" aria-labelledby="issue-title">
+        <h2 class="panel-title" id="issue-title">ออกบัตรคิว</h2>
+
+        <form id="ticket-form" novalidate>
+          <fieldset class="step">
+            <legend><span class="step-no">1</span>เลือกแผนก</legend>
+            <div class="dept-choices">
+              <label class="dept-choice">
+                <input type="radio" name="service" value="general" checked />
+                <span class="letter">A</span>
+                <span class="dept-text"><b>ตรวจทั่วไป</b><small data-wait="general">รอ 0 คน</small></span>
+              </label>
+              <label class="dept-choice">
+                <input type="radio" name="service" value="dental" />
+                <span class="letter">D</span>
+                <span class="dept-text"><b>ทันตกรรม</b><small data-wait="dental">รอ 0 คน</small></span>
+              </label>
+              <label class="dept-choice">
+                <input type="radio" name="service" value="lab" />
+                <span class="letter">L</span>
+                <span class="dept-text"><b>ห้องแล็บ</b><small data-wait="lab">รอ 0 คน</small></span>
+              </label>
+            </div>
+          </fieldset>
+
+          <div class="step">
+            <label class="step-label" for="patient-name"><span class="step-no">2</span>ชื่อผู้ป่วย</label>
+            <input class="input" id="patient-name" name="patientName" maxlength="80" autocomplete="off" required
+              placeholder="ชื่อ นามสกุล" aria-describedby="name-error" />
+            <p class="error" id="name-error"></p>
+            <label class="sub-label" for="phone">เบอร์โทร (ไม่ใส่ก็ได้)</label>
+            <input class="input" id="phone" name="phone" inputmode="tel" autocomplete="off" maxlength="12"
+              placeholder="08x-xxx-xxxx" aria-describedby="phone-error" />
+            <p class="error" id="phone-error"></p>
+          </div>
+
+          <div class="step">
+            <p class="error" id="form-error" role="alert"></p>
+            <button class="btn btn-primary btn-xl" type="submit"><span class="step-no step-no-inv">3</span>ออกบัตรคิว</button>
+          </div>
+        </form>
+
+        <div class="issued" id="issued" hidden>
+          <div class="issued-head">
+            <p>ออกบัตรแล้ว</p>
+            <button type="button" class="btn-plain" id="issued-close" aria-label="ปิด">ปิด</button>
+          </div>
+          <div class="ticket" id="ticket"></div>
+          <button type="button" class="btn btn-outline btn-block" id="print-ticket">พิมพ์บัตรคิว</button>
+        </div>
+      </section>
+
+      <!-- เรียกคิว -->
+      <section class="panel serve" aria-labelledby="serve-title">
+        <h2 class="panel-title" id="serve-title">เรียกคิว</h2>
+
+        <div class="dept-tabs" role="tablist" aria-label="เลือกแผนกที่จะเรียกคิว" id="dept-tabs">
+          <button type="button" role="tab" data-service="general" aria-selected="true">
+            <span class="letter">A</span>ตรวจทั่วไป <span class="count" data-tab-count="general">0</span>
+          </button>
+          <button type="button" role="tab" data-service="dental" aria-selected="false" tabindex="-1">
+            <span class="letter">D</span>ทันตกรรม <span class="count" data-tab-count="dental">0</span>
+          </button>
+          <button type="button" role="tab" data-service="lab" aria-selected="false" tabindex="-1">
+            <span class="letter">L</span>ห้องแล็บ <span class="count" data-tab-count="lab">0</span>
+          </button>
+        </div>
+
+        <div class="alert" id="load-error" role="alert" hidden>
+          <span id="load-error-text"></span>
+          <button type="button" class="btn btn-outline" id="retry">ลองอีกครั้ง</button>
+        </div>
+
+        <div id="serve-body" role="tabpanel" aria-labelledby="serve-title">
+          <div id="now" aria-live="polite"><p class="loading">กำลังโหลด…</p></div>
+          <div id="next"></div>
+
+          <div class="list-block">
+            <div class="list-head">
+              <h3>คิวที่รอ <span id="waiting-count"></span></h3>
+              <label>
+                <span class="visually-hidden">ค้นหาคิว</span>
+                <input class="search" type="search" id="search" placeholder="ค้นหาชื่อ / เลขคิว / เบอร์" autocomplete="off" />
+              </label>
+            </div>
+            <ul class="rows" id="waiting"></ul>
+          </div>
+
+          <details class="history" id="history-box">
+            <summary>เสร็จแล้ว / ข้าม <span id="history-count"></span></summary>
+            <ul class="rows" id="history"></ul>
+          </details>
+        </div>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <p id="totals"></p>
+      <button type="button" class="btn-plain btn-plain-danger" id="reset">ล้างคิวทั้งหมดของวันนี้</button>
+    </footer>
+
+    <dialog class="dialog" id="reset-dialog" aria-labelledby="reset-title">
+      <form method="dialog">
+        <h2 id="reset-title">ล้างคิวทั้งหมดของวันนี้?</h2>
+        <p>บัตรคิวทุกใบจะถูกลบ และเลขคิวจะเริ่มที่ 001 ใหม่ ย้อนกลับไม่ได้</p>
+        <div class="dialog-actions">
+          <button class="btn btn-outline" value="cancel" autofocus>ยกเลิก</button>
+          <button class="btn btn-danger" value="ok">ล้างคิว</button>
+        </div>
+      </form>
+    </dialog>
+
+    <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+    <div class="print-slip" id="print-slip" aria-hidden="true"></div>
+
+    <script src="/shared.js"></script>
+    <script src="/app.js"></script>
+  </body>
+</html>

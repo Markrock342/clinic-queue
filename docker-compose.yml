@@ -1,0 +1,8 @@
+services:
+  clinic-queue:
+    build: .
+    image: clinic-queue:latest
+    container_name: clinic-queue
+    ports:
+      - "3000:3000"
+    restart: unless-stopped

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0f1f5c" />
+    <title>จอเรียกคิว · คลินิกบ้านใบเตย</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Noto+Sans+Thai:wght@400..700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/display.css" />
+  </head>
+  <body>
+    <header class="top">
+      <div class="brand"><span class="mark" aria-hidden="true">บ</span>คลินิกบ้านใบเตย</div>
+      <div class="tools">
+        <button type="button" class="tool" id="sound-toggle" aria-pressed="false">เสียง: ปิด</button>
+        <button type="button" class="tool" id="fullscreen">เต็มจอ</button>
+      </div>
+      <time class="clock" id="d-time">--:--</time>
+    </header>
+
+    <main class="board">
+      <section class="calls" aria-labelledby="calls-title">
+        <h1 id="calls-title" class="visually-hidden">หมายเลขที่เรียก</h1>
+        <div class="cols" aria-hidden="true">
+          <span>หมายเลข</span><span>ช่องบริการ</span><span>เวลา</span>
+        </div>
+        <ol class="call-list" id="calls" aria-live="assertive"></ol>
+      </section>
+
+      <section class="next" aria-labelledby="next-title">
+        <h2 id="next-title" class="next-title">คิวถัดไป</h2>
+        <div id="lanes"></div>
+      </section>
+    </main>
+
+    <footer class="ticker">
+      <p>กรุณาเตรียมบัตรคิวให้พร้อม · เมื่อได้ยินหมายเลขของท่าน กรุณาติดต่อช่องบริการที่แสดงบนจอ</p>
+      <p class="offline" id="offline" hidden>ขาดการเชื่อมต่อ — กำลังลองใหม่</p>
+    </footer>
+
+    <div class="gate" id="gate">
+      <div class="gate-box">
+        <h1>เริ่มจอเรียกคิว</h1>
+        <p>เบราว์เซอร์ต้องให้กดหนึ่งครั้งก่อน จึงจะเล่นเสียงประกาศได้</p>
+        <button type="button" class="gate-go" id="gate-sound" autofocus>เปิดเสียงและเต็มจอ</button>
+        <button type="button" class="gate-skip" id="gate-silent">ใช้แบบไม่มีเสียง</button>
+      </div>
+    </div>
+
+    <script src="/shared.js"></script>
+    <script src="/display.js"></script>
+  </body>
+</html>

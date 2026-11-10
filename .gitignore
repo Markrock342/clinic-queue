@@ -1,0 +1,8 @@
+node_modules/
+data/*.json
+coverage/
+.DS_Store
+*.log
+app.pid
+.wrangler/
+.dev.vars
